@@ -5,6 +5,7 @@ from utils import get_random_position, load_sprite, print_text
 
 class SpaceRocks :
     MIN_ASTEROID_DISTANCE = 250
+    
     def __init__(self) :
         self._init_pygame()
         self.screen = pygame.display.set_mode((800,600))
@@ -83,6 +84,7 @@ class SpaceRocks :
                 self.bullets.remove(bullet)
         if not self.asteroids and self.spaceship :
             self.message = "You won!"
+    
     def _draw(self) :
         self.screen.blit(self.background, (0, 0))
         for game_object in self._get_game_objects() :

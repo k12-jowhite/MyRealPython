@@ -23,10 +23,11 @@ class GameObject :
         distance = self.position.distance_to(other_obj.position)
         return distance < self.radius + other_obj.radius
         
-class Spaceship(GameObject) :
+class Spaceship(GameObject) :    
     MANEUVERABILITY = 3
     ACCELERATION = 0.1
     BULLET_SPEED = 3
+    
     def __init__(self, position, create_bullet_callback) :
         self.create_bullet_callback = create_bullet_callback
         self.laser_sound = load_sound("laser")
