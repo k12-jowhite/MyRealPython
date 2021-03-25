@@ -1,7 +1,7 @@
 from pygame.math import Vector2
 from pygame.transform import rotozoom
 
-from utils import load_sprite, wrap_position
+from utils import get_random_velocity, load_sprite, wrap_position
 
 UP = Vector2(0, -1)
 
@@ -25,8 +25,8 @@ class GameObject :
         
 class Spaceship(GameObject) :
     MANEUVERABILITY = 3
-    ACCELERATION = 0.25
-    MAX_SPEED = 4.0
+    ACCELERATION = 0.1
+    MAX_SPEED = 4
     def __init__(self, position) :
         # Make a copy of the original UP vector
         self.direction = Vector2(UP)
@@ -45,5 +45,14 @@ class Spaceship(GameObject) :
         surface.blit(rotated_surface, blit_position)
     
     def accelerate(self) :
-        if self.velocity.magnitude() < self.MAX_SPEED :
-            self.velocity += self.direction * self.ACCELERATION
+        # acc_angle = abs(self.direction.angle_to(self.velocity))
+        # cur_speed = self.velocity.magnitude()
+        # if cur_speed < self.MAX_SPEED or acc_angle > 30 :
+        self.velocity += self.direction * self.ACCELERATION
+        
+class Asteroid(GameObject) :
+    def __init__(self, position) :
+        super().__init__(
+            position, load_sprite("asteroid"), get_random_velocity(1, 3)
+        )
+        
