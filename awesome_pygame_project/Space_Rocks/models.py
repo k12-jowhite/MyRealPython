@@ -26,8 +26,9 @@ class GameObject :
 class Spaceship(GameObject) :
     MANEUVERABILITY = 3
     ACCELERATION = 0.1
-    MAX_SPEED = 4
-    def __init__(self, position) :
+    BULLET_SPEED = 3
+    def __init__(self, position, create_bullet_callback) :
+        self.create_bullet_callback = create_bullet_callback
         # Make a copy of the original UP vector
         self.direction = Vector2(UP)
         super().__init__(position, load_sprite("spaceship"), Vector2(0))
@@ -45,10 +46,12 @@ class Spaceship(GameObject) :
         surface.blit(rotated_surface, blit_position)
     
     def accelerate(self) :
-        # acc_angle = abs(self.direction.angle_to(self.velocity))
-        # cur_speed = self.velocity.magnitude()
-        # if cur_speed < self.MAX_SPEED or acc_angle > 30 :
         self.velocity += self.direction * self.ACCELERATION
+        
+    def shoot(self) :
+        bullet_velocity = self.direction * self.BULLET_SPEED + self.velocity
+        bullet = Bullet(self.position, bullet_velocity)
+        self.create_bullet_callback(bullet)
         
 class Asteroid(GameObject) :
     def __init__(self, position) :
@@ -56,3 +59,9 @@ class Asteroid(GameObject) :
             position, load_sprite("asteroid"), get_random_velocity(1, 3)
         )
         
+class Bullet(GameObject) :
+    def __init__(self, position, velocity) :
+        super().__init__(position, load_sprite("bullet"), velocity)
+    
+    def move(self, surface) :
+        self.position = self.position + self.velocity
