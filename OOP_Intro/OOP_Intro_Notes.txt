@@ -1,0 +1,5 @@
+What is a Program?
+	- A set of instructions directing computers to perform specific operations.
+	
+What is OOP?
+	- 
