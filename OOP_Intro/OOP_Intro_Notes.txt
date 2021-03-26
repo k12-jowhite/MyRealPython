@@ -2,4 +2,43 @@ What is a Program?
 	- A set of instructions directing computers to perform specific operations.
 	
 What is OOP?
-	- 
+	- The use of objects to organize and perform actions within a program.
+	
+What is an object?
+	- An object is a specific set of commands within a program that are related.
+	- Often the Nouns in the program, i.e. People, Places, Things.
+	- Objects have attributes, like:
+		- Name
+		- Age
+		- Address
+		- Telephone Number
+	- Objects have actions, like:
+		- Walk
+		- Talk
+		- Breathe
+
+Classes create objects:
+	- Creates objects of a type
+	- An object created from a class is "instantiated"
+	- Example Class: DOORS
+		- Door Class
+			- Properties:
+				- Height
+				- Color
+				- is_locked
+			- Behaviors:
+				- open()
+				- close()
+				- toggle_lock()
+		
+		 - Example Object: door1
+			- height: 85
+			- color: red
+			- is_locked: false
+		
+		 - Example Object: door2
+			- height: 95
+			- color: gray
+			- is_locked: true
+		
+		door1 and door2 are unique object instances of type Door.
