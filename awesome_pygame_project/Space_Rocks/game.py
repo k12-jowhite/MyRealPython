@@ -69,9 +69,16 @@ class SpaceRocks :
         if self.spaceship :
             for asteroid in self.asteroids :
                 if asteroid.collides_with(self.spaceship) :
-                    self.spaceship = None
-                    self.message = "You lost!"
-                    break
+                    print(self.spaceship.shield)
+                    if self.spaceship.shield == 0 :
+                        self.spaceship = None
+                        self.message = "You lost!"
+                        break
+                    else :
+                        ship_direction = self.spaceship.direction
+                        self.asteroids.remove(asteroid)
+                        asteroid.reflect(ship_direction)
+                        self.spaceship.shield -= 1
         for bullet in self.bullets[:] :
             for asteroid in self.asteroids[:] :
                 if asteroid.collides_with(bullet) :

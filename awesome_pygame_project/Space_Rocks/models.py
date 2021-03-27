@@ -27,10 +27,11 @@ class Spaceship(GameObject) :
     MANEUVERABILITY = 3
     ACCELERATION = 0.1
     BULLET_SPEED = 3
-    
+    SHIELD_MAX = 10
     def __init__(self, position, create_bullet_callback) :
         self.create_bullet_callback = create_bullet_callback
         self.laser_sound = load_sound("laser")
+        self.shield = self.SHIELD_MAX
         # Make a copy of the original UP vector
         self.direction = Vector2(UP)
         super().__init__(position, load_sprite("spaceship"), Vector2(0))
@@ -57,8 +58,9 @@ class Spaceship(GameObject) :
         self.laser_sound.play()
         
 class Asteroid(GameObject) :
-    def __init__(self, position, create_asteroid_callback, size=3) :
+    def __init__(self, position, create_asteroid_callback, size=3, vector=None) :
         self.create_asteroid_callback = create_asteroid_callback
+        self.direction = vector if vector else get_random_velocity(1, 3)
         self.size = size
         size_to_scale = {
             3:1,
@@ -67,15 +69,31 @@ class Asteroid(GameObject) :
         }
         scale = size_to_scale[size]
         sprite = rotozoom(load_sprite("asteroid"), 0, scale)
+        trajectory = self.direction
         super().__init__(
-            position, sprite, get_random_velocity(1, 3)
+            position, sprite, trajectory
         )
     
     def split(self) :
         if self.size > 1 :
             for _ in range(2) :
                 asteroid = Asteroid(
-                    self.position, self.create_asteroid_callback, self.size - 1
+                    self.position, 
+                    self.create_asteroid_callback, 
+                    self.size - 1
+                )
+                self.create_asteroid_callback(asteroid)
+                
+    def reflect(self, ship_vector) :
+        print(ship_vector)
+        if self.size > 1 :
+            for a in range(2) :
+                new_angle = (-2, 0) if a % 2 else (0, 2)
+                asteroid = Asteroid(
+                    self.position, 
+                    self.create_asteroid_callback, 
+                    self.size - 1,
+                    ship_vector.reflect(new_angle)
                 )
                 self.create_asteroid_callback(asteroid)
         

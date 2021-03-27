@@ -24,9 +24,9 @@ def get_random_position(surface) :
         random.randrange(surface.get_height()),
     )
     
-def get_random_velocity(min_speed, max_speed) :
+def get_random_velocity(min_speed, max_speed, min_angle=0, max_angle=360) :
     speed = random.randint(min_speed, max_speed)
-    angle = random.randrange(0, 360)
+    angle = random.randrange(min_angle, max_angle)
     return Vector2(speed, 0).rotate(angle)
     
 def load_sound(name) :
