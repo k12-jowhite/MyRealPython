@@ -28,7 +28,7 @@ class Spaceship(GameObject) :
     ACCELERATION = 0.1
     DECELERATION = 0.1
     MIN_SPEED = 0
-    MAX_SPEED = 1
+    MAX_SPEED = 5
     BULLET_SPEED = 3
     SHIELD_MAX = 10
     def __init__(self, position, create_bullet_callback) :
@@ -53,6 +53,8 @@ class Spaceship(GameObject) :
     
     def accelerate(self) :
         self.velocity += self.direction * self.ACCELERATION
+        if self.velocity.length() > self.MAX_SPEED :
+            self.velocity.scale_to_length(self.MAX_SPEED)
 
     def decelerate(self) :
         if not self.velocity == (self.MIN_SPEED, self.MIN_SPEED) :
