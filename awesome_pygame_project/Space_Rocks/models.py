@@ -26,8 +26,9 @@ class GameObject :
 class Spaceship(GameObject) :    
     MANEUVERABILITY = 3
     ACCELERATION = 0.1
+    DECELERATION = 0.1
     MIN_SPEED = 0
-    MAX_SPEED = 3
+    MAX_SPEED = 1
     BULLET_SPEED = 3
     SHIELD_MAX = 10
     def __init__(self, position, create_bullet_callback) :
@@ -54,15 +55,15 @@ class Spaceship(GameObject) :
         self.velocity += self.direction * self.ACCELERATION
 
     def decelerate(self) :
-        if not self.velocity == (0, 0) :
+        if not self.velocity == (self.MIN_SPEED, self.MIN_SPEED) :
             sign = 1 if self.velocity.x >= 0 else -1
-            dec_factor = (abs(self.velocity.x) / 10) * sign
-            self.velocity.x = 0 if self.velocity.x == 0 else (
+            dec_factor = (abs(self.velocity.x) * self.DECELERATION) * sign
+            self.velocity.x = self.MIN_SPEED if self.velocity.x == self.MIN_SPEED else (
                 self.velocity.x - dec_factor
             )
             sign = 1 if self.velocity.y >= 0 else -1
-            dec_factor = (abs(self.velocity.y) / 10) * sign
-            self.velocity.y = 0 if self.velocity.y == 0 else (
+            dec_factor = (abs(self.velocity.y) * self.DECELERATION) * sign
+            self.velocity.y = self.MIN_SPEED if self.velocity.y == self.MIN_SPEED else (
                 self.velocity.y - dec_factor
             )
         print(self.velocity)
