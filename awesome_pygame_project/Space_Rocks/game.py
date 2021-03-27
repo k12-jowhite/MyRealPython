@@ -62,6 +62,8 @@ class SpaceRocks :
                 self.spaceship.rotate(clockwise=False)
             if is_key_pressed[pygame.K_UP] :
                 self.spaceship.accelerate()
+            if is_key_pressed[pygame.K_DOWN] :
+                self.spaceship.decelerate()
             
     def _process_game_logic(self) :
         for game_object in self._get_game_objects() :
