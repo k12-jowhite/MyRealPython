@@ -58,18 +58,19 @@ class Spaceship(GameObject) :
 
     def decelerate(self) :
         if not self.velocity == (self.MIN_SPEED, self.MIN_SPEED) :
-            sign = 1 if self.velocity.x >= 0 else -1
-            dec_factor = (abs(self.velocity.x) * self.DECELERATION) * sign
+            dec_factor = self.velocity.x * self.DECELERATION
             self.velocity.x = self.MIN_SPEED if self.velocity.x == self.MIN_SPEED else (
                 self.velocity.x - dec_factor
             )
-            sign = 1 if self.velocity.y >= 0 else -1
-            dec_factor = (abs(self.velocity.y) * self.DECELERATION) * sign
+            dec_factor = self.velocity.y * self.DECELERATION
             self.velocity.y = self.MIN_SPEED if self.velocity.y == self.MIN_SPEED else (
                 self.velocity.y - dec_factor
             )
         print(self.velocity)
-        
+    
+    def lose_shield(self) :
+        self.shield -= 1
+    
     def shoot(self) :
         bullet_velocity = self.direction * self.BULLET_SPEED + self.velocity
         bullet = Bullet(self.position, bullet_velocity)
@@ -109,7 +110,7 @@ class Asteroid(GameObject) :
         print(curr_angle)
         if self.size > 1 :
             for a in range(2) :
-                new_angle = (-1, 0) if a % 2 else (1, 0)
+                new_angle = (-1, -1) if a % 2 else (0, 1)
                 asteroid = Asteroid(
                     self.position, 
                     self.create_asteroid_callback, 
@@ -117,7 +118,8 @@ class Asteroid(GameObject) :
                     ship_vector.reflect(new_angle)
                 )
                 self.create_asteroid_callback(asteroid)
-        
+                print(asteroid.direction.angle_to(UP))
+
 class Bullet(GameObject) :
     def __init__(self, position, velocity) :
         super().__init__(position, load_sprite("bullet"), velocity)

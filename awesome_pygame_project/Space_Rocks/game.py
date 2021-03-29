@@ -78,9 +78,11 @@ class SpaceRocks :
                         break
                     else :
                         ship_direction = self.spaceship.direction
+                        for _ in range(asteroid.size * 2) :
+                            self.spaceship.decelerate()
+                        self.spaceship.shield -= 1
                         self.asteroids.remove(asteroid)
                         asteroid.reflect(ship_direction)
-                        self.spaceship.shield -= 1
         for bullet in self.bullets[:] :
             for asteroid in self.asteroids[:] :
                 if asteroid.collides_with(bullet) :
