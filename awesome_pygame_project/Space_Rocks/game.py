@@ -5,6 +5,9 @@ from utils import get_random_position, load_sprite, print_text
 
 class SpaceRocks :
     MIN_ASTEROID_DISTANCE = 250
+    ASTEROID_VALUE = 100
+    BONUS = 10
+    BONUS_VALUE = 1000
     
     def __init__(self) :
         self._init_pygame()
@@ -17,6 +20,7 @@ class SpaceRocks :
         self.bullets = []
         self.spaceship = Spaceship((400, 300), self.bullets.append)
         self.shields = Shield(self.spaceship)
+        self.player_score = 0
         self.bonus_count = 0
         for _ in range(6) :
             while True :
@@ -76,6 +80,7 @@ class SpaceRocks :
             for asteroid in self.asteroids :
                 if asteroid.collides_with(self.spaceship) :
                     print("Shields @ " + str(self.shields.strength))
+                    self.bonus_count = 0
                     if self.shields.strength == 0 :
                         self.spaceship = None
                         self.message = "You lost!"
@@ -91,6 +96,7 @@ class SpaceRocks :
         for bullet in self.bullets[:] :
             for asteroid in self.asteroids[:] :
                 if asteroid.collides_with(bullet) :
+                    self.player_score += self.ASTEROID_VALUE // asteroid.size
                     self.bonus_count += 1
                     self.asteroids.remove(asteroid)
                     self.bullets.remove(bullet)
@@ -99,9 +105,10 @@ class SpaceRocks :
         for bullet in self.bullets[:] :
             if not self.screen.get_rect().collidepoint(bullet.position) :
                 self.bullets.remove(bullet)
-        if self.bonus_count == 10 :
+        if self.bonus_count == self.BONUS :
+            self.player_score += self.BONUS_VALUE
             self.shields.increase_shield(self.spaceship)
-            self.bonus_count = 0        
+            self.bonus_count = 0
         if not self.asteroids and self.spaceship :
             self.message = "You won!"
     
@@ -111,5 +118,13 @@ class SpaceRocks :
             game_object.draw(self.screen)
         if self.message :
             print_text(self.screen, self.message, self.font)
+        print_text(
+            self.screen,
+            str(self.player_score),
+            self.font,
+            elev="top",
+            align="right",
+            color="white"
+        )
         pygame.display.flip()
         self.clock.tick(60)

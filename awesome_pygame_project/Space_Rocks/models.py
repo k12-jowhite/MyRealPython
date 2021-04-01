@@ -131,8 +131,8 @@ class Shield(GameObject) :
                 self.sprite,
                 str(self.strength),
                 self.font,
-                pos = "bottom",
-                color = WHITE
+                elev="bottom",
+                color=WHITE
             )
         surface.blit(self.sprite, blit_position)
     
