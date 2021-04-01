@@ -31,7 +31,6 @@ def get_random_velocity(min_speed, max_speed, min_angle=0, max_angle=360) :
     
 def get_angle_modifier() :
     return random.randrange(5, 10) / 10
-    
 
 def load_sound(name) :
     path = f"assets/sounds/{name}.wav"

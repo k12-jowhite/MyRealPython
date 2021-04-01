@@ -1,6 +1,6 @@
 import pygame
 
-from models import Asteroid, Spaceship
+from models import Asteroid, Spaceship, Shield
 from utils import get_random_position, load_sprite, print_text
 
 class SpaceRocks :
@@ -16,6 +16,7 @@ class SpaceRocks :
         self.asteroids = []
         self.bullets = []
         self.spaceship = Spaceship((400, 300), self.bullets.append)
+        self.shields = Shield(self.spaceship)
         for _ in range(6) :
             while True :
                 position = get_random_position(self.screen)
@@ -37,9 +38,10 @@ class SpaceRocks :
         pygame.display.set_caption("Space Rocks")
         
     def _get_game_objects(self) :
-        game_objects = [*self.asteroids, *self.bullets]
+        game_objects = [*self.asteroids, *self.bullets,]
         if self.spaceship :
             game_objects.append(self.spaceship)
+            game_objects.append(self.shields)
         return game_objects
 
     def _handle_input(self) :
@@ -64,22 +66,22 @@ class SpaceRocks :
                 self.spaceship.accelerate()
             if is_key_pressed[pygame.K_DOWN] :
                 self.spaceship.decelerate()
-            
+            self.shields.update(self.spaceship)    
     def _process_game_logic(self) :
         for game_object in self._get_game_objects() :
             game_object.move(self.screen)
         if self.spaceship :
             for asteroid in self.asteroids :
                 if asteroid.collides_with(self.spaceship) :
-                    print(self.spaceship.shield)
-                    if self.spaceship.shield == 0 :
+                    print("Shields @ " + str(self.shields.strength))
+                    if self.shields.strength == 0 :
                         self.spaceship = None
                         self.message = "You lost!"
                         break
                     else :
                         for _ in range(asteroid.size * 2) :
                             self.spaceship.decelerate()
-                        self.spaceship.shield -= 1
+                        self.shields.decrease_shield(self.spaceship)
                         self.asteroids.remove(asteroid)
                         asteroid.reflect(
                             self.spaceship.direction,

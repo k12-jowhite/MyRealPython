@@ -1,3 +1,5 @@
+from pygame import Surface, SRCALPHA
+from pygame.draw import circle
 from pygame.math import Vector2
 from pygame.transform import rotozoom
 
@@ -10,6 +12,8 @@ from utils import (
 )
 
 UP = Vector2(0, -1)
+BLUE = (0, 0, 255)
+RED = (255, 0, 0)
 
 class GameObject :
     def __init__(self, position, sprite, velocity) :
@@ -36,14 +40,13 @@ class Spaceship(GameObject) :
     MIN_SPEED = 0
     MAX_SPEED = 5
     BULLET_SPEED = 3
-    SHIELD_MAX = 10
     def __init__(self, position, create_bullet_callback) :
         self.create_bullet_callback = create_bullet_callback
         self.laser_sound = load_sound("laser")
-        self.shield = self.SHIELD_MAX
+        sprite = load_sprite("spaceship")
         # Make a copy of the original UP vector
         self.direction = Vector2(UP)
-        super().__init__(position, load_sprite("spaceship"), Vector2(0))
+        super().__init__(position, sprite, Vector2(0))
         
     def rotate(self, clockwise=True) :
         sign = 1 if clockwise else -1
@@ -72,16 +75,71 @@ class Spaceship(GameObject) :
             self.velocity.y = self.MIN_SPEED if self.velocity.y == self.MIN_SPEED else (
                 self.velocity.y - dec_factor
             )
-        print(self.velocity)
-    
-    def lose_shield(self) :
-        self.shield -= 1
     
     def shoot(self) :
         bullet_velocity = self.direction * self.BULLET_SPEED + self.velocity
         bullet = Bullet(self.position, bullet_velocity)
         self.create_bullet_callback(bullet)
         self.laser_sound.play()
+
+
+class Shield(GameObject) :
+    SHIELD_MAX = 10
+    def __init__(self, spaceship, size=SHIELD_MAX) :
+        self.position = spaceship.position
+        self.velocity = spaceship.velocity
+        self.strength = size
+        self.color = BLUE
+        self.size = 60
+        self.r = self.size // 2
+        self.sprite = Surface((self.size, self.size), SRCALPHA)
+        self.ticker = 0
+        self.image = circle(
+            self.sprite, 
+            self.color,
+            (self.r, self.r),
+            self.r,
+            self.strength
+        )
+        super().__init__(self.position, self.sprite, self.velocity)
+    
+    def draw(self, surface) :
+        new_surface_size = (self.size, self.size)
+        blit_position = self.position - Vector2(self.r)
+        self.sprite = Surface((self.size, self.size), SRCALPHA)
+        if self.ticker > 0 :
+            self.color = RED
+        else :
+            self.color = BLUE
+        if self.strength > 0 :
+            self.image = circle(
+                self.sprite,
+                self.color,
+                (self.r, self.r),
+                self.r,
+                self.strength
+            )
+        surface.blit(self.sprite, blit_position)
+    
+    def update(self, spaceship) :
+        self.position = spaceship.position
+        self.velocity = spaceship.velocity
+        if self.ticker > 0 :
+            self.ticker -= 1
+    
+    def decrease_shield(self, spaceship) :
+        self.strength -= 1
+        self.ticker = 6
+
+
+
+class Bullet(GameObject) :
+    def __init__(self, position, velocity) :
+        super().__init__(position, load_sprite("bullet"), velocity)
+    
+    def move(self, surface) :
+        self.position = self.position + self.velocity
+
         
 class Asteroid(GameObject) :
     SPLITS_INTO = 2
@@ -127,8 +185,7 @@ class Asteroid(GameObject) :
                     new_angle = (
                         ship_vector.x - angle_modifier,
                         -ship_vector.y + angle_modifier
-                    )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-                print(new_angle)
+                    )
                 new_vector = ship_vector.reflect(new_angle)
                 new_vector = new_vector.scale_to_length(new_velocity)
                 asteroid = Asteroid(
@@ -138,11 +195,3 @@ class Asteroid(GameObject) :
                     new_vector
                 )
                 self.create_asteroid_callback(asteroid)
-                print(asteroid.direction.angle_to(UP))
-
-class Bullet(GameObject) :
-    def __init__(self, position, velocity) :
-        super().__init__(position, load_sprite("bullet"), velocity)
-    
-    def move(self, surface) :
-        self.position = self.position + self.velocity
