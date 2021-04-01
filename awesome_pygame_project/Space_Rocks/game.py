@@ -17,6 +17,7 @@ class SpaceRocks :
         self.bullets = []
         self.spaceship = Spaceship((400, 300), self.bullets.append)
         self.shields = Shield(self.spaceship)
+        self.bonus_count = 0
         for _ in range(6) :
             while True :
                 position = get_random_position(self.screen)
@@ -90,6 +91,7 @@ class SpaceRocks :
         for bullet in self.bullets[:] :
             for asteroid in self.asteroids[:] :
                 if asteroid.collides_with(bullet) :
+                    self.bonus_count += 1
                     self.asteroids.remove(asteroid)
                     self.bullets.remove(bullet)
                     asteroid.split()
@@ -97,6 +99,9 @@ class SpaceRocks :
         for bullet in self.bullets[:] :
             if not self.screen.get_rect().collidepoint(bullet.position) :
                 self.bullets.remove(bullet)
+        if self.bonus_count == 10 :
+            self.shields.increase_shield(self.spaceship)
+            self.bonus_count = 0        
         if not self.asteroids and self.spaceship :
             self.message = "You won!"
     

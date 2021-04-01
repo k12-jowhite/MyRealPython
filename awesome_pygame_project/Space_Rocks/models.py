@@ -16,6 +16,7 @@ from utils import (
 UP = Vector2(0, -1)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
+GREEN = (0, 255, 0)
 WHITE = (255, 255, 255)
 
 class GameObject :
@@ -112,8 +113,10 @@ class Shield(GameObject) :
     def draw(self, surface) :
         blit_position = self.position - Vector2(self.r)
         self.sprite = Surface((self.size, self.size), SRCALPHA)
-        if self.ticker > 0 :
+        if self.ticker < 0 :
             self.color = RED
+        elif self.ticker > 0 :
+            self.color = GREEN
         else :
             self.color = BLUE
         if self.strength > 0 :
@@ -136,12 +139,18 @@ class Shield(GameObject) :
     def update(self, spaceship) :
         self.position = spaceship.position
         self.velocity = spaceship.velocity
-        if self.ticker > 0 :
-            self.ticker -= 1
+        if self.ticker != 0 :
+            tick = 1 if self.ticker < 0 else -1
+            self.ticker += tick
     
     def decrease_shield(self, spaceship) :
         self.strength -= 1
-        self.ticker = self.TICKER_MAX
+        self.ticker = -self.TICKER_MAX
+        
+    def increase_shield(self, spaceship) :
+        if not self.strength == self.SHIELD_MAX :
+            self.strength += 1
+            self.ticker = self.TICKER_MAX
 
 
 
