@@ -65,12 +65,13 @@ class SpaceRocks :
             if is_key_pressed[pygame.K_UP] :
                 self.spaceship.accelerate()
             if is_key_pressed[pygame.K_DOWN] :
-                self.spaceship.decelerate()
-            self.shields.update(self.spaceship)    
+                self.spaceship.decelerate()  
+    
     def _process_game_logic(self) :
         for game_object in self._get_game_objects() :
             game_object.move(self.screen)
         if self.spaceship :
+            self.shields.update(self.spaceship)  
             for asteroid in self.asteroids :
                 if asteroid.collides_with(self.spaceship) :
                     print("Shields @ " + str(self.shields.strength))

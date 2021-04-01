@@ -36,8 +36,19 @@ def load_sound(name) :
     path = f"assets/sounds/{name}.wav"
     return Sound(path)
     
-def print_text(surface, text, font, color=Color("tomato")) :
+def print_text(surface, text, font, pos=None, color=Color("tomato")) :
     text_surface = font.render(text, True, color)
     rect = text_surface.get_rect()
-    rect.center = Vector2(surface.get_size()) / 2
+    if pos == "top" :
+        rect.center = Vector2(
+            surface.get_width() / 2,
+            rect.h / 2
+        )
+    elif pos == "bottom":
+        rect.center = Vector2(
+            surface.get_width() / 2,
+            surface.get_height() - rect.h / 2
+        )
+    else :
+        rect.center = Vector2(surface.get_size()) / 2
     surface.blit(text_surface, rect)

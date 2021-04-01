@@ -1,4 +1,5 @@
 from pygame import Surface, SRCALPHA
+from pygame.font import Font
 from pygame.draw import circle
 from pygame.math import Vector2
 from pygame.transform import rotozoom
@@ -8,12 +9,14 @@ from utils import (
     get_angle_modifier,
     load_sound,
     load_sprite,
-    wrap_position
+    wrap_position,
+    print_text
 )
 
 UP = Vector2(0, -1)
 BLUE = (0, 0, 255)
 RED = (255, 0, 0)
+WHITE = (255, 255, 255)
 
 class GameObject :
     def __init__(self, position, sprite, velocity) :
@@ -85,15 +88,18 @@ class Spaceship(GameObject) :
 
 class Shield(GameObject) :
     SHIELD_MAX = 10
+    TICKER_START = 0
+    TICKER_MAX = 6
     def __init__(self, spaceship, size=SHIELD_MAX) :
+        self.font = Font(None, 18)
         self.position = spaceship.position
         self.velocity = spaceship.velocity
         self.strength = size
         self.color = BLUE
-        self.size = 60
+        self.size = spaceship.sprite.get_width() + self.strength + 20
         self.r = self.size // 2
         self.sprite = Surface((self.size, self.size), SRCALPHA)
-        self.ticker = 0
+        self.ticker = self.TICKER_START
         self.image = circle(
             self.sprite, 
             self.color,
@@ -104,7 +110,6 @@ class Shield(GameObject) :
         super().__init__(self.position, self.sprite, self.velocity)
     
     def draw(self, surface) :
-        new_surface_size = (self.size, self.size)
         blit_position = self.position - Vector2(self.r)
         self.sprite = Surface((self.size, self.size), SRCALPHA)
         if self.ticker > 0 :
@@ -119,6 +124,13 @@ class Shield(GameObject) :
                 self.r,
                 self.strength
             )
+            print_text(
+                self.sprite,
+                str(self.strength),
+                self.font,
+                pos = "bottom",
+                color = WHITE
+            )
         surface.blit(self.sprite, blit_position)
     
     def update(self, spaceship) :
@@ -129,7 +141,7 @@ class Shield(GameObject) :
     
     def decrease_shield(self, spaceship) :
         self.strength -= 1
-        self.ticker = 6
+        self.ticker = self.TICKER_MAX
 
 
 
@@ -140,7 +152,7 @@ class Bullet(GameObject) :
     def move(self, surface) :
         self.position = self.position + self.velocity
 
-        
+
 class Asteroid(GameObject) :
     SPLITS_INTO = 2
     def __init__(self, position, create_asteroid_callback, size=3, vector=None) :
