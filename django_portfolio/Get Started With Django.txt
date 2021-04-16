@@ -1,0 +1,19 @@
+Building a portfolio using the Django Framework.
+
+What you'll learn in this course:
+ - How to build a Django project from start to finish
+ - We'll do lots of Django deep-dives, asking: how does this actually work?
+ - Get friendly with Django error messages
+ - Hands-on debugging approaches during Django development
+ - Understand Django projects and file structure
+ - Understand how requests flow through Django apps
+ - Models, views, and templates
+ - Primer on Relational Databases and using the Django ORM
+ - Interact with your DB from the Django Shell and the Django admin interface
+ - Using the Django templating language and template inheritance
+ - URL resolving and correctly using path cnonverters and namespaces
+ - Using bootstrap for style and mobile responsiveness
+ 
+******************************************************************
+Getting Started
+******************************************************************
