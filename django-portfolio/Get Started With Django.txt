@@ -49,3 +49,25 @@ Django Files:
 Basic Flow in a Django project:
  - Local server -> example_app/urls.py -> example_app/views.py -> views.py -> templates -> browser
  
+******************************************************************
+Setting up your development environment
+******************************************************************
+ - Create a new environment
+	- Inside PowerShell/Terminal: 
+		python3 -m venv .env
+	- A new folder called .env will be created
+	- Activate the virtual environment:
+		.env/bin/activate (Linux Terminal)
+		.\.env\scripts\activate (Windows PowerShell)
+	- Confirm django installation:
+		pip freeze
+
+ - Create a Django Project
+	- PyCharm: Connect env to the project by selecting the python interpreter inside the env folder
+	- Create a new django project:
+		django-admin startproject portfolio . (. = Inside current directory)
+	- The project will create the necessary folder structure and files to start
+	- View the current project:
+		python manage.py runserver
+	- Open the webpage from a browser using the URL provided (http://127.0.0.1:8000/)
+	
