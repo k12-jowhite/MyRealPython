@@ -17,3 +17,35 @@ What you'll learn in this course:
 ******************************************************************
 Getting Started
 ******************************************************************
+Django File Structure:
+ |myproject ~/Documents/myproject
+ |---- .env
+ |---- example_app
+ |-------- migrations
+ |-------- __init__.py
+ |-------- admin.py
+ |-------- apps.py
+ |-------- models.py
+ |-------- tests.py
+ |-------- urls.py
+ |-------- views.py
+ |----myproject
+ |-------- __init__.py
+ |-------- settings.py
+ |-------- urls.py
+ |-------- wsgi.py
+ |----manage.py
+
+Django Files:
+ - manage.py > won't be touched but will be called frequently
+ - myproject
+	- urls.py -> Route forward to other apps
+	- settings.py -> Project wide settings
+ - example_app
+	- urls.py -> Directing from myproject
+	- models.py -> Database logic
+	- views.py -> Django code logic
+
+Basic Flow in a Django project:
+ - Local server -> example_app/urls.py -> example_app/views.py -> views.py -> templates -> browser
+ 
