@@ -18,22 +18,22 @@ What you'll learn in this course:
 Getting Started
 ******************************************************************
 Django File Structure:
- |myproject ~/Documents/myproject
- |---- .env
- |---- example_app
- |-------- migrations
- |-------- __init__.py
- |-------- admin.py
- |-------- apps.py
- |-------- models.py
- |-------- tests.py
- |-------- urls.py
- |-------- views.py
- |----myproject
- |-------- __init__.py
- |-------- settings.py
- |-------- urls.py
- |-------- wsgi.py
+ |[myproject] ~/Documents/myproject
+ |----[.env]
+ |----[example_app]
+ |--------[migrations]
+ |--------__init__.py
+ |--------admin.py
+ |--------apps.py
+ |--------models.py
+ |--------tests.py
+ |--------urls.py
+ |--------views.py
+ |----[myproject]
+ |--------__init__.py
+ |--------settings.py
+ |--------urls.py
+ |--------wsgi.py
  |----manage.py
 
 Django Files:
@@ -70,4 +70,117 @@ Setting up your development environment
 	- View the current project:
 		python manage.py runserver
 	- Open the webpage from a browser using the URL provided (http://127.0.0.1:8000/)
+
+******************************************************************
+Build a Django Application
+******************************************************************
+ - Django by error messages
+	- A Django error message:
+		Error Type
+		Method
+		URL
+		Explanation
+		Helpful tips
+	
+ - Create the App
+	- Create a new app within the current project:
+		python manage.py startapp projects
+	- Django will create folders and files for the new app:
+		|[Projects]
+		|----[migrations]
+		|----admin.py
+		|----apps.py
+		|----models.py
+		|----tests.py
+		|----views.py
+		|----__init__.py
+	
+ - Register the App
+	- settings.py --> INSTALLED APPS
+		- Add new project to list of installed apps
+		- Add documentation about new app
+
+ - Build Your Routes
+	- Referring to the instructions in the URLs files:
+		- Change import django.urls statement to:
+			from django.urls import include, path (Add "include" to existing statement)
+		- Add the new projects path to the urlpatterns list:
+			path('project/', include('project.urls)),
+		- If you run the portfolio now, you'll receive a new error stating:
+			ModuleNotFoundError: No module named 'project.urls'
+		- Create a new file called urls.py in the project folder
+		- Again, running the portfolio server and connecting to the project page will error:
+			urls.py does not appear to have any patterns in it
+		- Copy the urlpatterns from the portfolio/urls file into the project/urls file:
+			Replace the existing patters with:
+				urlpatterns = [path('', views.project_list),]
+			Remove the calls to:
+				from django.contrib import admin
+				from django.urls import include (Leaving the call to django.urls.path)
+			Add a call to the project/views:
+				from project import views
+		- Rerunning the server at this point results in the error:
+			AttributeError: module 'project.views' has no attribute 'project_list'
+			
+ - Create a View
+	- Open the project/views file and add the project_list definition:
+		def project_list(request) :
+	- For now, enter pass as the only line within the project_list function:
+		def project_list(request) :
+			pass
+	- Running the server results in a new error in the browser:
+		ValueError at /project/
+		The view project.views.project_list didn't return an HttpResponse object
+	- Add a call to HttpResponse in the Django.http library:
+		from django.http import HttpResponse
+	- Replace the pass inside project_list with:
+		return HttpResponse("<h1>Hello Everyone!</h1>") ("<h1>...</h1>" can be any HTML)
+	- Checking the server again, the text "Hello Everyone!" is displayed in a blank screen
+
+ - Create a template
+	- Modify project_list inside project/views:
+		- Remove current return statement:
+			return HttpResponse("<h1>Hello Everyone!</h1>")
+		- Add new return statement calling the render function with a new template name:
+			return render(request, 'project/index.html')
+	- The server will return a new error:
+		TemplateDoesNotExist at /project/
+	- Create the new folders /templates/project inside the project folder:
+		cd djange-portfolio/project
+		md templates
+		md project
+		cd templates/project
+	- Create a new text file named index.html in templates/project
+	- Enter some html text into the body of the new index.html file
+	- Register the new template in the settings.py file under TEMPLATES:
+		DIRS : [Path(BASE_DIR / 'project/templates'),],
+	
+ - Django's Double Folder Structure
+	- Assuming there are three apps: projects, app2, and app3 each with a templates sub-folder.
+	  Eventually, Django gathers the three templates folders into one. If each app has files that
+	  have matching names, Django won't be able to recognize which file to render from the
+	  templates folder. Using the double folder structure prevents Django from confusing the
+	  files after the templates folders are consolidated.
+	  
+	- Flat-folder structure:
+		projects/templates/index.html |--------						--------|index.html
+											  |						|
+											  |						|
+		app2/templates/index.html     |----------->| templates |--->--------|index.html
+											  |						|
+											  |						|
+		app3/templates/index.html     |--------						--------|index.html
+		
+	- Double-folder structure:
+		projects/templates/projects/index.html	|						--|projects/index.html
+												|						|
+												|						|
+		app2/templates/app2/index.html	|----------->| templates |----->--|app2/index.html
+												|						|
+												|						|
+		app3/templates/app3/index.html	|--------						--|app3/index.html
+		
+ - Style with Bootstrap
+	- Get a link from the bootstrap site to plug into your html code
+	- Paste the link into the head of the index.html file
 	
