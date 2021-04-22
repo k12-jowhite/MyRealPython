@@ -17,7 +17,8 @@ class SpaceRocks :
         self.background = load_sprite("space", False)
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font(None, 64)
-        self.message = ""
+        self.message_1 = ""
+        self.message_2 = ""
         self.asteroids = []
         self.bullets = []
         self.spaceship = Spaceship((400, 300), self.bullets.append)
@@ -86,11 +87,13 @@ class SpaceRocks :
         print("Paused Game")
         while self.game_status == -1 :
             timer += 1
-            self.message = f"GAME PAUSED \n ****{timer}****"
+            self.message_1 = "GAME PAUSED"
+            self.message_2 = f"{timer}"
             self._draw()
             time.sleep(1)
             self._handle_input()
-        self.message = ""
+        self.message_1 = ""
+        self.message_2 = ""
         print("Resumed Game")
     
     def _process_game_logic(self) :
@@ -105,7 +108,7 @@ class SpaceRocks :
                     if self.shields.strength == 0 :
                         self.spaceship = None
                         self.game_status = 0
-                        self.message = "You lost!"
+                        self.message_1 = "You lost!"
                         break
                     else :
                         for _ in range(asteroid.size * 2) :
@@ -133,7 +136,7 @@ class SpaceRocks :
             self.bonus_count = 0
         if not self.asteroids and self.spaceship :
             self.game_status = 0
-            self.message = "You won!"
+            self.message_1 = "You won!"
         if self.game_status == -1 :
             self._game_paused()
     
@@ -149,7 +152,9 @@ class SpaceRocks :
             align="right",
             color="white"
         )
-        if self.message :
-            print_text(self.screen, self.message, self.font)
+        if self.message_1 :
+            print_text(self.screen, self.message_1, self.font)
+        if self.message_2 :
+            print_text(self.screen, self.message_2, self.font, line=2)
         pygame.display.flip()
         self.clock.tick(60)
